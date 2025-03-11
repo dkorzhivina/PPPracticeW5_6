@@ -1,0 +1,93 @@
+openapi: 3.0.0
+info:
+  title: Admin API
+  version: 1.0.0
+  description: API панели администратора для управления товарами
+servers:
+  - url: http://localhost:8080
+paths:
+  /products:
+    get:
+      summary: Получить все товары
+      responses:
+        '200':
+          description: Список товаров
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      summary: Добавить товары
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: Товары добавлены
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /products/{id}:
+    put:
+      summary: Обновить товар по ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Товар обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Товар не найден
+    delete:
+      summary: Удалить товар по ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Товар удалён
+        '404':
+          description: Товар не найден
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        price:
+          type: integer
+        description:
+          type: string
+        categories:
+          type: array
+          items:
+            type: string

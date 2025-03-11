@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Панель администратора</title>
+  <style>
+    form { border: 1px solid #ccc; padding: 1em; margin: 1em 0; }
+    label { display: block; margin: 0.5em 0; }
+  </style>
+</head>
+<body>
+  <h1>Панель администратора</h1>
+  <button id="showForm">Добавить товар</button>
+  <div id="formContainer" style="display:none;">
+    <form id="productForm">
+      <label>Название:
+        <input type="text" name="title" required>
+      </label>
+      <label>Цена:
+        <input type="number" name="price" required>
+      </label>
+      <label>Описание:
+        <textarea name="description" required></textarea>
+      </label>
+      <label>Категории (через запятую):
+        <input type="text" name="categories" required>
+      </label>
+      <button type="submit">Добавить товар</button>
+    </form>
+  </div>
+  <div id="message"></div>
+  <script>
+    document.getElementById('showForm').addEventListener('click', () => {
+      document.getElementById('formContainer').style.display = 'block';
+    });
+    document.getElementById('productForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+         title: form.title.value,
+         price: Number(form.price.value),
+         description: form.description.value,
+         categories: form.categories.value.split(',').map(s => s.trim())
+      };
+      fetch('/products', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(result => {
+         document.getElementById('message').textContent = 'Товар успешно добавлен!';
+         form.reset();
+         document.getElementById('formContainer').style.display = 'none';
+      })
+      .catch(err => {
+         document.getElementById('message').textContent = 'Ошибка при добавлении товара';
+         console.error(err);
+      });
+    });
+  </script>
+</body>
+</html>
